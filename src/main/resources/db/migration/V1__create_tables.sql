@@ -5,7 +5,7 @@ CREATE TABLE links (
 );
 
 CREATE TABLE access_logs (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     short_code VARCHAR(20) NOT NULL,
     ip_address VARCHAR(45),
     user_agent TEXT,
