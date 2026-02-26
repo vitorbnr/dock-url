@@ -1,5 +1,6 @@
 package com.vitorbnr.dock_url.service;
 
+import com.vitorbnr.dock_url.dto.LinkResponseDTO;
 import com.vitorbnr.dock_url.model.AccessLog;
 import com.vitorbnr.dock_url.model.Link;
 import com.vitorbnr.dock_url.repository.AccessLogRepository;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LinkService {
@@ -47,6 +50,18 @@ public class LinkService {
         AccessLog log = new AccessLog(link, ipAddress, userAgent);
         accessLogRepository.save(log);
         System.out.println("Métrica salva em background para o link: " + link.getShortCode());
+    }
+
+    public List<LinkResponseDTO> getAllLinksWithMetrics(String domain) {
+        return linkRepository.findAll().stream().map(link -> {
+            long clicks = accessLogRepository.countByLink_ShortCode(link.getShortCode());
+            return new LinkResponseDTO(domain + link.getShortCode(), link.getOriginalUrl(), clicks);
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteLink(String shortCode) {
+        linkRepository.deleteById(shortCode);
     }
 
     private String generateRandomCode() {
