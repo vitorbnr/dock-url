@@ -29,6 +29,23 @@ services:
     networks:
       - shortener-network
 
+  backend:
+    build: .
+    container_name: shortener_backend
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${DB_NAME}
+    depends_on:
+      - postgres
+    networks:
+      - shortener-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`short.local`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8081"
+
 volumes:
   postgres_data:
 

@@ -19,7 +19,7 @@ public class LinkController {
 
     private final LinkService linkService;
 
-    private static final String DOMAIN = "https://short.local/";
+    private static final String DOMAIN = "http://short.local/";
 
     public LinkController(LinkService linkService) {
         this.linkService = linkService;
